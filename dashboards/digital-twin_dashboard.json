@@ -2,7 +2,7 @@
   "title": "Graph Summit 2023 - Digital Twin Workshop",
   "version": "2.2",
   "settings": {
-    "pagenumber": 3,
+    "pagenumber": 1,
     "editable": true,
     "fullscreenEnabled": true,
     "parameters": {
@@ -22,7 +22,8 @@
       "neodash_operationalpointname_name_4": "Bruxelles-Midi | Brussel-Zuid",
       "neodash_operationalpointname_name_4_display": "Bruxelles-Midi | Brussel-Zuid",
       "neodash_foto": "https://www.followmeaway.com/wp-content/uploads/2020/03/Hidden-Gems-in-Germany-Kamnitz-Gorge.jpg",
-      "neodash_web": "https://www.followmeaway.com/hidden-gems-in-germany/"
+      "neodash_web": "https://www.followmeaway.com/hidden-gems-in-germany/",
+      "neodash_website": "https://theculturetrip.com/europe/germany/articles/16-epic-places-in-germany-even-germans-dont-know-about/"
     },
     "disableRowLimiting": false
   },
@@ -32,7 +33,7 @@
       "reports": [
         {
           "title": "Countries in Graph",
-          "query": "MATCH (op:OperationalPoint)\nWITH substring(op.id,0,2) AS Countries\nRETURN DISTINCT Countries ORDER BY Countries;\n\n",
+          "query": "MATCH (op:OperationalPoint)\nWITH DISTINCT left(op.id, 2) AS Countries\nRETURN Countries ORDER BY Countries;\n\n",
           "width": 3,
           "height": 4,
           "x": 0,
@@ -64,9 +65,10 @@
           "selection": {
             "OperationalPoint": "(no label)",
             "BorderPoint": "(no label)",
+            "UK": "(no label)",
             "SmallStation": "(no label)",
             "Junction": "(no label)",
-            "passenger terminal": "(no label)",
+            "PassengerTerminal": "(no label)",
             "Station": "(no label)",
             "Switch": "(no label)",
             "DepotOrWorkshop": "(no label)",
@@ -81,7 +83,7 @@
           }
         },
         {
-          "title": "Country Code shown",
+          "title": "Country Selected",
           "query": "RETURN $neodash_countrycode\n\n\n",
           "width": 3,
           "height": 1,
@@ -95,7 +97,7 @@
           }
         },
         {
-          "title": "Stations in country $neodash_countrycode",
+          "title": "Stations in country",
           "query": "MATCH(op:OperationalPoint)\nWHERE op.id STARTS WITH $neodash_countrycode \nAND labels(op)[1] IN ['Station','SmallStation'] \nRETURN count(op); \n\n\n",
           "width": 3,
           "height": 1,
@@ -110,7 +112,7 @@
           }
         },
         {
-          "title": "Switches in country $neodash_countrycode",
+          "title": "Switches in country ",
           "query": "MATCH(op:OperationalPoint)\nWHERE op.id STARTS WITH $neodash_countrycode \nAND labels(op)[1] IN ['Switch','Junction'] \nRETURN count(op); \n\n\n",
           "width": 3,
           "height": 1,
@@ -125,7 +127,7 @@
           }
         },
         {
-          "title": "Stop Points in country $neodash_countrycode",
+          "title": "Passenger Stops in country ",
           "query": "MATCH(op:OperationalPoint)\nWHERE op.id STARTS WITH $neodash_countrycode \nAND labels(op)[1] IN ['PassengerStop','PassengerTerminal'] \nRETURN count(op); \n\n\n",
           "width": 3,
           "height": 1,
@@ -240,6 +242,7 @@
           "selection": {
             "OperationalPoint": "id",
             "Station": "id",
+            "Germany": "id",
             "PassengerStop": "id",
             "Switch": "id",
             "Junction": "id"
@@ -281,6 +284,7 @@
           "selection": {
             "OperationalPoint": "(no label)",
             "Station": "(no label)",
+            "Germany": "(no label)",
             "PassengerStop": "(no label)",
             "Switch": "(no label)",
             "Junction": "(no label)"
@@ -423,12 +427,22 @@
           "selection": {
             "OperationalPoint": "(no label)",
             "Station": "(no label)",
-            "Switch": "(no label)",
+            "Germany": "(no label)",
             "PassengerStop": "(no label)",
             "Junction": "(no label)",
+            "Switch": "(no label)",
             "TechnicalChange": "(no label)",
             "BorderPoint": "(no label)",
-            "SmallStation": "(no label)"
+            "France": "(no label)",
+            "FreightTerminal": "(no label)",
+            "PrivateSiding": "(no label)",
+            "DepotOrWorkshop": "(no label)",
+            "ShuntingYard": "(no label)",
+            "Spain": "(no label)",
+            "DomesticBorderPoint": "(no label)",
+            "SmallStation": "(no label)",
+            "TrainTechnicalServices": "(no label)",
+            "Belgium": "(no label)"
           },
           "settings": {
             "nodePositions": {},
@@ -488,7 +502,7 @@
       "reports": [
         {
           "title": "List of POIs",
-          "query": "MATCH(po:POI)\nRETURN po.city AS City, po.description AS description, po.linkFoto AS Foto, po.linkWebSite AS Website;\n\n\n\n",
+          "query": "MATCH (po:POI)\nRETURN \n\tpo.city AS City, \n    po.description AS Description, \n    po.linkFoto AS Photo, \n    po.linkWebSite AS Website;\n\n\n\n",
           "width": 6,
           "height": 3,
           "x": 0,
@@ -500,23 +514,23 @@
               {
                 "condition": "Click",
                 "field": "City",
-                "value": "Foto",
+                "value": "Photo",
                 "customization": "set variable",
                 "customizationValue": "foto"
               },
               {
                 "condition": "Click",
-                "field": "description",
+                "field": "Description",
                 "value": "Website",
                 "customization": "set variable",
-                "customizationValue": "web"
+                "customizationValue": "website"
               }
             ],
             "columnWidths": "[1,1,0.5,0.5]"
           }
         },
         {
-          "title": "POI Foto",
+          "title": "POI Photo",
           "query": "![image]($neodash_foto)\n\n\n",
           "width": 6,
           "height": 3,
@@ -532,12 +546,12 @@
         },
         {
           "title": "Website (click on description button above)",
-          "query": "$neodash_web\n\n\n",
+          "query": "We would render the website:\n\n* $neodash_website",
           "width": 12,
-          "height": 4,
+          "height": 1,
           "x": 0,
           "y": 3,
-          "type": "iframe",
+          "type": "text",
           "selection": {},
           "settings": {
             "replaceGlobalParameters": true,
