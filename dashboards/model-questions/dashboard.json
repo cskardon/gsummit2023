@@ -1,0 +1,284 @@
+{
+  "title": "The questions",
+  "version": "2.4",
+  "settings": {
+    "pagenumber": 0,
+    "editable": true,
+    "fullscreenEnabled": false,
+    "parameters": {
+      "neodash_startlocation": "Exeter",
+      "neodash_endlocation": "Plymou",
+      "neodash_endId": "UKN2775",
+      "neodash_startId": "UKN1818"
+    },
+    "theme": "light"
+  },
+  "pages": [
+    {
+      "title": "Question 1",
+      "reports": [
+        {
+          "id": "780e29c8-a8ec-43ef-8d6a-f8b3c0b7d3cd",
+          "title": "Search for Start",
+          "query": "RETURN true;",
+          "width": 6,
+          "height": 2,
+          "x": 0,
+          "y": 0,
+          "type": "select",
+          "selection": {},
+          "settings": {
+            "type": "Free Text",
+            "entityType": "StartLocation",
+            "parameterName": "neodash_startlocation"
+          },
+          "schema": []
+        },
+        {
+          "id": "6580b095-c6e3-45c0-8f8f-2c05a442a40d",
+          "title": "Search for End",
+          "query": "RETURN true;",
+          "width": 6,
+          "height": 2,
+          "x": 6,
+          "y": 0,
+          "type": "select",
+          "selection": {},
+          "settings": {
+            "type": "Free Text",
+            "entityType": "EndLocation",
+            "parameterName": "neodash_endlocation"
+          },
+          "schema": []
+        },
+        {
+          "id": "1585d9fc-fd2b-45dc-9984-7410d0bf7341",
+          "title": "Select the Start",
+          "query": "MATCH (opn:OperationalPointName)<-[:NAMED]-(op:OperationalPoint)\nWHERE opn.name CONTAINS $neodash_startlocation\nRETURN opn.name AS name, op.id AS __ID",
+          "width": 6,
+          "height": 3,
+          "x": 0,
+          "y": 2,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "actionsRules": [
+              {
+                "condition": "Click",
+                "field": "name",
+                "value": "__ID",
+                "customization": "set variable",
+                "customizationValue": "startId"
+              }
+            ]
+          }
+        },
+        {
+          "id": "f550fd89-a2a1-43b3-8e1e-f2302f5c5c18",
+          "title": "Select the End",
+          "query": "MATCH (opn:OperationalPointName)<-[:NAMED]-(op:OperationalPoint)\nWHERE opn.name CONTAINS $neodash_endlocation\nRETURN opn.name AS name, op.id AS __ID",
+          "width": 6,
+          "height": 3,
+          "x": 6,
+          "y": 2,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "actionsRules": [
+              {
+                "condition": "Click",
+                "field": "name",
+                "value": "__ID",
+                "customization": "set variable",
+                "customizationValue": "endId"
+              }
+            ]
+          }
+        },
+        {
+          "id": "7d694bfa-956c-4f13-b8a7-f216422daaff",
+          "title": "Graph View",
+          "query": "MATCH \n    (start:OperationalPoint {id:$neodash_startId}),(end:OperationalPoint {id:$neodash_endId})\nCALL apoc.algo.dijkstra(start, end, 'SECTION', 'sectionlength') YIELD path, weight\nRETURN path, weight;",
+          "width": 12,
+          "height": 4,
+          "x": 0,
+          "y": 5,
+          "type": "graph",
+          "selection": {
+            "OperationalPoint": "id",
+            "Station": "id",
+            "UK": "id",
+            "SmallStation": "id",
+            "TrainTechnicalServices": "id",
+            "Junction": "id",
+            "DepotOrWorkshop": "id"
+          },
+          "settings": {},
+          "schema": [
+            [
+              "OperationalPoint",
+              "componentId",
+              "degreeScore",
+              "id",
+              "betweennessScore",
+              "geolocation"
+            ],
+            [
+              "Station",
+              "componentId",
+              "degreeScore",
+              "id",
+              "betweennessScore",
+              "geolocation"
+            ],
+            [
+              "UK",
+              "componentId",
+              "degreeScore",
+              "id",
+              "betweennessScore",
+              "geolocation"
+            ],
+            [
+              "SmallStation",
+              "componentId",
+              "degreeScore",
+              "id",
+              "betweennessScore",
+              "geolocation"
+            ],
+            [
+              "TrainTechnicalServices",
+              "componentId",
+              "degreeScore",
+              "id",
+              "betweennessScore",
+              "geolocation"
+            ],
+            [
+              "Junction",
+              "componentId",
+              "degreeScore",
+              "id",
+              "betweennessScore",
+              "geolocation"
+            ],
+            [
+              "DepotOrWorkshop",
+              "componentId",
+              "degreeScore",
+              "id",
+              "betweennessScore",
+              "geolocation"
+            ]
+          ]
+        },
+        {
+          "id": "30125a17-ab89-4a22-a68a-01f066ef2d1f",
+          "title": "Map View",
+          "query": "MATCH \n    (start:OperationalPoint {id:$neodash_startId}),(end:OperationalPoint {id:$neodash_endId})\nCALL apoc.algo.dijkstra(start, end, 'SECTION', 'sectionlength') YIELD path, weight\nRETURN path, weight;\n\n\n\n",
+          "width": 12,
+          "height": 9,
+          "x": 12,
+          "y": 0,
+          "type": "map",
+          "selection": {
+            "OperationalPoint": "id",
+            "Station": "id",
+            "UK": "id",
+            "SmallStation": "id",
+            "TrainTechnicalServices": "id",
+            "Junction": "id",
+            "DepotOrWorkshop": "id"
+          },
+          "settings": {},
+          "schema": [
+            [
+              "OperationalPoint",
+              "componentId",
+              "degreeScore",
+              "id",
+              "betweennessScore",
+              "geolocation"
+            ],
+            [
+              "Station",
+              "componentId",
+              "degreeScore",
+              "id",
+              "betweennessScore",
+              "geolocation"
+            ],
+            [
+              "UK",
+              "componentId",
+              "degreeScore",
+              "id",
+              "betweennessScore",
+              "geolocation"
+            ],
+            [
+              "SmallStation",
+              "componentId",
+              "degreeScore",
+              "id",
+              "betweennessScore",
+              "geolocation"
+            ],
+            [
+              "TrainTechnicalServices",
+              "componentId",
+              "degreeScore",
+              "id",
+              "betweennessScore",
+              "geolocation"
+            ],
+            [
+              "Junction",
+              "componentId",
+              "degreeScore",
+              "id",
+              "betweennessScore",
+              "geolocation"
+            ],
+            [
+              "DepotOrWorkshop",
+              "componentId",
+              "degreeScore",
+              "id",
+              "betweennessScore",
+              "geolocation"
+            ]
+          ]
+        },
+        {
+          "id": "82faed39-b61d-49c0-a47a-a78c62dd2bae",
+          "title": "",
+          "query": "\n\n\n",
+          "width": 6,
+          "height": 4,
+          "x": 0,
+          "y": 9,
+          "type": "table",
+          "selection": {},
+          "settings": {}
+        }
+      ]
+    }
+  ],
+  "parameters": {},
+  "extensions": {
+    "active": true,
+    "activeReducers": [],
+    "forms": {},
+    "advanced-charts": {
+      "active": true
+    },
+    "styling": {},
+    "actions": {
+      "active": true
+    },
+    "query-translator": {}
+  },
+  "uuid": "115296c0-9f52-489f-936c-072985d1bb10"
+}
