@@ -49,7 +49,6 @@ In the pattern, there are two key bits, first, we're excluding any pattern that 
 Visually, it's nice to be able to see what the route looked like originally, so you can compare the differences, to do so you can add another report with the following Cypher.
 
 ```cypher
-// Path without avoiding anywhere
 MATCH 
     (start:OperationalPoint {id:$neodash_q2StartId}),(end:OperationalPoint {id:$neodash_q2EndId})
 MATCH p =
@@ -61,20 +60,24 @@ RETURN p LIMIT 1
 
 This is the same Cypher as the previous step, only it doesn't include the `WHERE NOT` section.
 
-## 
+## Improvements to the experience
+
+As it stands, we have a functional dashboard, but it does heavily rely on knowing the names of the junctions, and doesn't give us the opportunity to 'play' around, and just try different `OperationalPoint`s on the route.
+
+So, we'll add another 'table' report, but this one will contain all the `OperationalPoint`s on the route. The majority of the query stays the same, as we want the same `path`, but this time, after getting our `path` we [`UNWIND`](https://neo4j.com/docs/cypher-manual/current/clauses/unwind/) the nodes in the path using the [`nodes()`](https://neo4j.com/docs/cypher-manual/current/functions/list/#functions-nodes) function.
+
+We do some filtering (`WHERE p <> start AND p <> end`) to ensure we don't return our start/end points and then return the names of the `OperationalPoint`s on the way.
 
 ```cypher
-//Get all the Operational points en route.
-
 MATCH 
     (start:OperationalPoint {id:$neodash_q2StartId}),(end:OperationalPoint {id:$neodash_q2EndId})
 MATCH path =
     (start)
     ( (:OperationalPoint)-[:SECTION]-(op:OperationalPoint) )+
     (end)
+WITH path LIMIT 1
 UNWIND nodes(path) AS p
 WITH p WHERE p <> start AND p <> end
 MATCH (p)-[:NAMED]->(pName:OperationalPointName)
 RETURN DISTINCT pName.name AS name, p.id AS __ID
 ```
-
