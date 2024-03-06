@@ -2,6 +2,8 @@
 
 > What’s the quickest way to get a repair crew from Technical Services to a given Switch?
 
+## Introduction
+
 We've already seen an example between two stations - Malmö and London Paddington.
 
 ```cypher
@@ -52,7 +54,7 @@ We will want to repeat this for the `endlocation` as well. This allows our users
 
 ## Using the parameters to get the `OperationalPoint`s
 
-Now we have a way for our business users to search for a particular location, we need to use that to find the actual OperationalPoint instances to find our route. Cypher wise that's pretty simple:
+Now we have a way for our business users to search for a particular location, we need to use that to find the actual `OperationalPoint` instances to find our route. Cypher wise that's pretty simple:
 
 ```cypher
 MATCH (opn:OperationalPointName)<-[:NAMED]-(op:OperationalPoint)

@@ -2,14 +2,21 @@
   "title": "The questions",
   "version": "2.4",
   "settings": {
-    "pagenumber": 0,
+    "pagenumber": 1,
     "editable": true,
     "fullscreenEnabled": false,
     "parameters": {
       "neodash_startlocation": "Exeter",
       "neodash_endlocation": "Plymou",
       "neodash_endId": "UKN2775",
-      "neodash_startId": "UKN1818"
+      "neodash_startId": "UKN1818",
+      "neodash_q2_start_name": "PAD",
+      "neodash_q2_end_name": "HDN",
+      "neodash_q2avoidname": "Willes",
+      "neodash_q2AvoidId": "UKN3440",
+      "neodash_q2_avoid_name": "Willes",
+      "neodash_q2StartId": "UKN2431",
+      "neodash_q2EndId": "UKN2048"
     },
     "theme": "light"
   },
@@ -250,18 +257,408 @@
               "geolocation"
             ]
           ]
+        }
+      ]
+    },
+    {
+      "title": "Question 2",
+      "reports": [
+        {
+          "id": "9ff59c42-6336-4b54-8117-eca1e69a31ff",
+          "title": "",
+          "query": "RETURN true;",
+          "width": 4,
+          "height": 2,
+          "x": 0,
+          "y": 0,
+          "type": "select",
+          "selection": {},
+          "settings": {
+            "type": "Free Text",
+            "entityType": "Q2 Start Name",
+            "parameterName": "neodash_q2_start_name"
+          },
+          "schema": []
         },
         {
-          "id": "82faed39-b61d-49c0-a47a-a78c62dd2bae",
+          "id": "880a301c-4004-4747-8548-8b7c3440a74c",
           "title": "",
-          "query": "\n\n\n",
+          "query": "RETURN true;",
+          "width": 4,
+          "height": 2,
+          "x": 4,
+          "y": 0,
+          "type": "select",
+          "selection": {},
+          "settings": {
+            "type": "Free Text",
+            "entityType": "Q2 End Name",
+            "parameterName": "neodash_q2_end_name"
+          },
+          "schema": []
+        },
+        {
+          "id": "a5dfa355-eb19-4e0a-a75d-756c7c9ee36f",
+          "title": "",
+          "query": "MATCH (opn:OperationalPointName)<-[:NAMED]-(op:OperationalPoint)\nWHERE opn.name CONTAINS $neodash_q2_start_name\nRETURN opn.name AS name, op.id AS __ID\n\n\n",
+          "width": 4,
+          "height": 4,
+          "x": 0,
+          "y": 2,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "actionsRules": [
+              {
+                "condition": "Click",
+                "field": "name",
+                "value": "__ID",
+                "customization": "set variable",
+                "customizationValue": "q2StartId"
+              }
+            ]
+          }
+        },
+        {
+          "id": "9cdf7deb-fe83-4af6-bab9-5f7f4a011016",
+          "title": "",
+          "query": "MATCH (opn:OperationalPointName)<-[:NAMED]-(op:OperationalPoint)\nWHERE opn.name CONTAINS $neodash_q2_end_name\nRETURN opn.name AS name, op.id AS __ID\n\n\n",
+          "width": 4,
+          "height": 4,
+          "x": 4,
+          "y": 2,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "actionsRules": [
+              {
+                "condition": "Click",
+                "field": "name",
+                "value": "__ID",
+                "customization": "set variable",
+                "customizationValue": "q2EndId"
+              }
+            ]
+          }
+        },
+        {
+          "id": "1eb5d041-a820-43f1-95d8-c5963cb2a799",
+          "title": "",
+          "query": "RETURN true;",
+          "width": 4,
+          "height": 2,
+          "x": 8,
+          "y": 0,
+          "type": "select",
+          "selection": {},
+          "settings": {
+            "type": "Free Text",
+            "entityType": "Q2 Avoid Name",
+            "parameterName": "neodash_q2_avoid_name"
+          },
+          "schema": []
+        },
+        {
+          "id": "c437c9de-d36b-4266-aa86-92b64052f614",
+          "title": "",
+          "query": "MATCH (opn:OperationalPointName)<-[:NAMED]-(op:OperationalPoint)\nWHERE opn.name CONTAINS $neodash_q2_avoid_name\nRETURN opn.name AS name, op.id AS __ID\n\n\n",
+          "width": 4,
+          "height": 4,
+          "x": 8,
+          "y": 2,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "actionsRules": [
+              {
+                "condition": "Click",
+                "field": "name",
+                "value": "__ID",
+                "customization": "set variable",
+                "customizationValue": "q2AvoidId"
+              }
+            ]
+          }
+        },
+        {
+          "id": "8ab57aa5-cd4a-4597-8e74-3490614c2cc5",
+          "title": "Avoiding",
+          "query": "MATCH \n    (start:OperationalPoint {id:$neodash_q2StartId}),(end:OperationalPoint {id:$neodash_q2EndId})\nMATCH p =\n    (start)\n    ( (:OperationalPoint)-[:SECTION]-(op:OperationalPoint WHERE NOT(op.id = $neodash_q2AvoidId) ) ){1,10}\n    (end)\nRETURN p LIMIT 1",
+          "width": 6,
+          "height": 4,
+          "x": 12,
+          "y": 0,
+          "type": "graph",
+          "selection": {
+            "OperationalPoint": "id",
+            "PassengerTerminal": "id",
+            "UK": "id",
+            "TrainTechnicalServices": "id",
+            "Junction": "id",
+            "SmallStation": "id"
+          },
+          "settings": {},
+          "schema": [
+            [
+              "OperationalPoint",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ],
+            [
+              "PassengerTerminal",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ],
+            [
+              "UK",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ],
+            [
+              "TrainTechnicalServices",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ],
+            [
+              "Junction",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ],
+            [
+              "SmallStation",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ]
+          ]
+        },
+        {
+          "id": "dc6c235a-9c60-48f5-a30c-3d86265e7cb0",
+          "title": "Not Avoiding",
+          "query": "MATCH \n    (start:OperationalPoint {id:$neodash_q2StartId}),(end:OperationalPoint {id:$neodash_q2EndId})\nMATCH p =\n    (start)\n    ( (:OperationalPoint)-[:SECTION]-(op:OperationalPoint) ){1,10}\n    (end)\nRETURN p LIMIT 1",
+          "width": 6,
+          "height": 4,
+          "x": 18,
+          "y": 0,
+          "type": "graph",
+          "selection": {
+            "OperationalPoint": "id",
+            "PassengerTerminal": "id",
+            "UK": "id",
+            "TrainTechnicalServices": "id",
+            "SmallStation": "id"
+          },
+          "settings": {},
+          "schema": [
+            [
+              "OperationalPoint",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ],
+            [
+              "PassengerTerminal",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ],
+            [
+              "UK",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ],
+            [
+              "TrainTechnicalServices",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ],
+            [
+              "SmallStation",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ]
+          ]
+        },
+        {
+          "id": "870caf00-4fe1-4dfc-8257-bc71157f812e",
+          "title": "",
+          "query": "MATCH \n    (start:OperationalPoint {id:$neodash_q2StartId}),(end:OperationalPoint {id:$neodash_q2EndId})\nMATCH p =\n    (start)\n    ( (:OperationalPoint)-[:SECTION]-(op:OperationalPoint WHERE NOT(op.id = $neodash_q2AvoidId) ) ){1,10}\n    (end)\nRETURN p LIMIT 1",
+          "width": 6,
+          "height": 4,
+          "x": 12,
+          "y": 4,
+          "type": "map",
+          "selection": {
+            "OperationalPoint": "id",
+            "PassengerTerminal": "id",
+            "UK": "id",
+            "TrainTechnicalServices": "id",
+            "Junction": "id",
+            "SmallStation": "id"
+          },
+          "settings": {},
+          "schema": [
+            [
+              "OperationalPoint",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ],
+            [
+              "PassengerTerminal",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ],
+            [
+              "UK",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ],
+            [
+              "TrainTechnicalServices",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ],
+            [
+              "Junction",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ],
+            [
+              "SmallStation",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ]
+          ]
+        },
+        {
+          "id": "53a38a40-0331-4413-9026-c4078f4ce30c",
+          "title": "",
+          "query": "MATCH \n    (start:OperationalPoint {id:$neodash_q2StartId}),(end:OperationalPoint {id:$neodash_q2EndId})\nMATCH p =\n    (start)\n    ( (:OperationalPoint)-[:SECTION]-(op:OperationalPoint) ){1,10}\n    (end)\nRETURN p LIMIT 1",
+          "width": 6,
+          "height": 4,
+          "x": 18,
+          "y": 4,
+          "type": "map",
+          "selection": {
+            "OperationalPoint": "id",
+            "PassengerTerminal": "id",
+            "UK": "id",
+            "TrainTechnicalServices": "id",
+            "SmallStation": "id"
+          },
+          "settings": {},
+          "schema": [
+            [
+              "OperationalPoint",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ],
+            [
+              "PassengerTerminal",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ],
+            [
+              "UK",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ],
+            [
+              "TrainTechnicalServices",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ],
+            [
+              "SmallStation",
+              "componentId",
+              "betweennessScore",
+              "degreeScore",
+              "id",
+              "geolocation"
+            ]
+          ]
+        },
+        {
+          "id": "2df18b0c-9b65-4ab6-9253-ce18d8e7dadc",
+          "title": "Operational Points on the way",
+          "query": "MATCH \n    (start:OperationalPoint {id:$neodash_q2StartId}),(end:OperationalPoint {id:$neodash_q2EndId})\nMATCH path =\n    (start)\n    ( (:OperationalPoint)-[:SECTION]-(op:OperationalPoint) ){1,10}\n    (end)\nUNWIND nodes(path) AS p\nWITH p WHERE p <> start AND p <> end\nMATCH (p)-[:NAMED]->(pName:OperationalPointName)\nRETURN DISTINCT pName.name AS name, p.id AS __ID\n\n\n",
           "width": 6,
           "height": 4,
           "x": 0,
-          "y": 9,
+          "y": 8,
           "type": "table",
           "selection": {},
-          "settings": {}
+          "settings": {
+            "actionsRules": [
+              {
+                "condition": "Click",
+                "field": "name",
+                "value": "__ID",
+                "customization": "set variable",
+                "customizationValue": "q2AvoidId"
+              }
+            ]
+          }
         }
       ]
     }
