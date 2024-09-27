@@ -44,7 +44,7 @@ LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/cskardon/gsummit20
 //This WITH is to ensure our data is as normalized as we can
 WITH
     trim(row.id) AS id, //trim will remove and start and trailing spaces from an ID
-    toFloat(row.latitude) AS latitude, //toFloat will 
+    toFloat(row.latitude) AS latitude, //toFloat will convert an INTEGER, FLOAT or a STRING value to a FLOAT
     toFloat(row.longitude) AS longitude,
     trim(row.name) AS name,
     [] + trim(row.country) + trim(row.extralabel) AS labels,
